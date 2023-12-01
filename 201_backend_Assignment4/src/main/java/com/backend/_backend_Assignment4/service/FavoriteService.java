@@ -1,11 +1,14 @@
 package com.backend._backend_Assignment4.service;
 
 import com.backend._backend_Assignment4.dto.FavoriteDTO;
+import com.backend._backend_Assignment4.dto.ReservationDTO;
 import com.backend._backend_Assignment4.model.Favorite;
+import com.backend._backend_Assignment4.model.Reservation;
 import com.backend._backend_Assignment4.model.User;
 import com.backend._backend_Assignment4.repository.FavoriteRepository;
 import com.backend._backend_Assignment4.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -98,5 +101,53 @@ public class FavoriteService {
         System.out.println("Favorite added: " + favorite);
     }
 
+    private FavoriteDTO convertToDTO(Favorite favorite) {
+        FavoriteDTO dto = new FavoriteDTO();
+        dto.setId(favorite.getId());
+        dto.setUserId(favorite.getUser().getId());
+        dto.setYelpRestaurantId(favorite.getYelpRestaurantId());
+        dto.setRestaurantName(favorite.getRestaurantName());
+        dto.setRestaurantPhone(favorite.getRestaurantPhone());
+        dto.setRestaurantUrl(favorite.getRestaurantUrl());
+        dto.setRestaurantImageUrl(favorite.getRestaurantImageUrl());
+        dto.setRestaurantAddress(favorite.getRestaurantAddress());
+        dto.setCuisine(favorite.getCuisine());
+        dto.setPrice(favorite.getPrice());
+        dto.setRating(favorite.getRating().toString()); // Assuming rating is a Double
+        // Add other necessary conversions if any
+
+        return dto;
+    }
+
+
+
+    public List<FavoriteDTO> getFavoritesSortedByNameAsc(Long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "restaurantName"));
+        return favorites.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<FavoriteDTO> getFavoritesSortedByNameDesc(Long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "restaurantName"));
+        return favorites.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<FavoriteDTO> getFavoritesSortedByPriceAsc(Long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "price"));
+        return favorites.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+    public List<FavoriteDTO> getFavoritesSortedByPriceDesc(Long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "price"));
+        return favorites.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+
+    public List<FavoriteDTO> getFavoritesSortedByMostRecent(Long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId, Sort.by(Sort.Direction.DESC, "id"));
+        return favorites.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+    public List<FavoriteDTO> getFavoritesSortedByLeastRecent(Long userId) {
+        List<Favorite> favorites = favoriteRepository.findByUserId(userId, Sort.by(Sort.Direction.ASC, "id"));
+        return favorites.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 
 }

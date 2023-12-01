@@ -107,7 +107,6 @@ public class ReservationService {
     }
 
     public List<ReservationDTO> getLeastRecentReservations() {
-        // Use Spring Data JPA to retrieve reservations sorted by reservationDate in ascending order (least recent first)
         List<Reservation> reservations = reservationRepository.findAll(Sort.by(Sort.Direction.ASC, "reservationDate"));
 
         return reservations.stream()
