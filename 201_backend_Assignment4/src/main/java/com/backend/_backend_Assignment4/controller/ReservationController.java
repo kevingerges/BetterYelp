@@ -38,34 +38,24 @@ public class ReservationController {
         reservationService.removeReservationById(reservationId);
         return ResponseEntity.ok().build();
     }
-
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ReservationDTO>> getUserReservations(
-            @PathVariable Long userId,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortOrder
-    ) {
-        List<ReservationDTO> reservations;
-
-        if (sortBy != null && sortOrder != null) {
-            if (sortBy.equals("mostRecent") && sortOrder.equals("desc")) {
-                // Sort by reservationDate in descending order (most recent first)
-                reservations = reservationService.getUserReservationsSortedByMostRecent(userId);
-            } else if (sortBy.equals("leastRecent") && sortOrder.equals("asc")) {
-                // Sort by reservationDate in ascending order (least recent first)
-                reservations = reservationService.getUserReservationsSortedByLeastRecent(userId);
-            } else {
-                // Handle invalid sortBy or sortOrder values
-                return ResponseEntity.badRequest().build();
-            }
-        } else {
-            // If no sorting parameters are provided, fetch reservations without sorting
-            reservations = reservationService.getUserReservations(userId);
-        }
-
+    public ResponseEntity<List<ReservationDTO>> getUserReservations(@PathVariable Long userId) {
+        List<ReservationDTO> reservations = reservationService.getUserReservations(userId);
         return ResponseEntity.ok(reservations);
     }
 
+
+    @GetMapping("/most-recent")
+    public ResponseEntity<List<ReservationDTO>> getMostRecentReservations() {
+        List<ReservationDTO> reservations = reservationService.getMostRecentReservations();
+        return ResponseEntity.ok(reservations);
+    }
+
+    @GetMapping("/least-recent")
+    public ResponseEntity<List<ReservationDTO>> getLeastRecentReservations() {
+        List<ReservationDTO> reservations = reservationService.getLeastRecentReservations();
+        return ResponseEntity.ok(reservations);
+    }
 
 
 

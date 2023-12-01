@@ -98,36 +98,22 @@ public class ReservationService {
             dto.setRestaurantImageUrl(reservation.getRestaurant().getImageUrl());
             return dto;
         }
-    public List<ReservationDTO> getUserReservationsSortedByMostRecent(Long userId) {
-        Sort sort = Sort.by(Sort.Order.desc("reservationDate"), Sort.Order.desc("reservationTime"));
-        List<Reservation> reservations = reservationRepository.findByUserIdOrderByReservationDateDescReservationTimeDesc(userId);
-        return convertToDTOs(reservations);
+    public List<ReservationDTO> getMostRecentReservations() {
+        List<Reservation> reservations = reservationRepository.findAll(Sort.by(Sort.Direction.DESC, "reservationDate"));
+
+        return reservations.stream()
+                .map(this::mapToReservationDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<ReservationDTO> getUserReservationsSortedByLeastRecent(Long userId) {
-        Sort sort = Sort.by(Sort.Order.asc("reservationDate"), Sort.Order.asc("reservationTime"));
-        List<Reservation> reservations = reservationRepository.findByUserIdOrderByReservationDateAscReservationTimeAsc(userId);
-        return convertToDTOs(reservations);
+    public List<ReservationDTO> getLeastRecentReservations() {
+        // Use Spring Data JPA to retrieve reservations sorted by reservationDate in ascending order (least recent first)
+        List<Reservation> reservations = reservationRepository.findAll(Sort.by(Sort.Direction.ASC, "reservationDate"));
+
+        return reservations.stream()
+                .map(this::mapToReservationDTO)
+                .collect(Collectors.toList());
     }
 
-    private List<ReservationDTO> convertToDTOs(List<Reservation> reservations) {
-            List<ReservationDTO> reservationDTOs = new ArrayList<>();
 
-            for (Reservation reservation : reservations) {
-                ReservationDTO reservationDTO = new ReservationDTO();
-                reservationDTO.setReservationId(reservation.getReservationId());
-//                reservationDTO.setUserId(reservation.getUser());
-//                reservationDTO.setRestaurantId(reservation.getRestaurant());
-                reservationDTO.setRestaurantName(reservation.getRestaurantName());
-                reservationDTO.setRestaurantAddress(reservation.getRestaurantAddress());
-                reservationDTO.setRestaurantImageUrl(reservation.getRestaurantImageUrl());
-                reservationDTO.setReservationDate(reservation.getReservationDate());
-                reservationDTO.setReservationTime(reservation.getReservationTime());
-                reservationDTO.setDetailRequested(reservation.getDetailRequested());
-
-                reservationDTOs.add(reservationDTO);
-            }
-
-            return reservationDTOs;
-    }
 }

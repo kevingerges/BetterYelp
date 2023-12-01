@@ -29,6 +29,7 @@ public class Reservation {
     private String restaurantName;
     private String restaurantAddress;
     private String restaurantImageUrl;
+    @Column(name = "reservation_date")
     private String reservationDate;
 
 
