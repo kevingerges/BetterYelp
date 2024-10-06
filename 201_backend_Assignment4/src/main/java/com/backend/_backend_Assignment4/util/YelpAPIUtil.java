@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @Service
 public class YelpAPIUtil {
 
-    private final String apiKey = "mpIHH69hrloI3tuHP43UiXQOZRmLTkd446duytV-OvzKD-bmb-AKX0RHL9w4qRqplg_ytMx-tgWwh3AdS6pmBZsJgxzI2s8KLs0-tjVz5UF0jpNc7dO0IX4C-z8zZXYx";
+    private final String apiKey = "hahanottoday";
     public List<Restaurant> searchRestaurants(String query, Double latitude, Double longitude, String sort) throws IOException {
         OkHttpClient client = new OkHttpClient();
         String formattedQuery = formatQueryParameter(query);
